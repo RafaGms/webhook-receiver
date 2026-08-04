@@ -31,6 +31,21 @@ export class EventsService {
     return this.repository.save(event);
   }
 
+  markProcessed(event: Event): Promise<Event> {
+    event.status = EventStatus.Processed;
+    event.error = null;
+    event.processedAt = new Date();
+
+    return this.repository.save(event);
+  }
+
+  markFailed(event: Event, error: string): Promise<Event> {
+    event.status = EventStatus.Failed;
+    event.error = error;
+
+    return this.repository.save(event);
+  }
+
   findById(id: string): Promise<Event | null> {
     return this.repository.findOneBy({ id });
   }

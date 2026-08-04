@@ -2,6 +2,7 @@ import { plainToInstance } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
+  IsNumber,
   IsString,
   Max,
   Min,
@@ -56,6 +57,11 @@ export class EnvironmentVariables {
   @IsInt()
   @Min(1)
   IDEMPOTENCY_TTL: number = 86400;
+
+  @IsNumber()
+  @Min(0)
+  @Max(1)
+  PROCESSING_FAILURE_RATE: number = 0.2;
 }
 
 export function validate(config: Record<string, unknown>): EnvironmentVariables {

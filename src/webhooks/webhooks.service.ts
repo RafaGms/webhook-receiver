@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PaymentWebhookDto } from '../common/dto/payment-webhook.dto';
 import { EventsService } from '../events/events.service';
 import { IdempotencyService } from '../processing/idempotency.service';
+import { PaymentHandlerService } from '../processing/payment-handler.service';
 
 @Injectable()
 export class WebhooksService {
@@ -10,6 +11,7 @@ export class WebhooksService {
   constructor(
     private readonly eventsService: EventsService,
     private readonly idempotencyService: IdempotencyService,
+    private readonly paymentHandler: PaymentHandlerService,
   ) {}
 
   async handle(payload: PaymentWebhookDto, rawBody?: Buffer) {
@@ -28,9 +30,18 @@ export class WebhooksService {
       return { id: duplicate.id, status: duplicate.status };
     }
 
-    this.logger.log(`received ${payload.type} (${payload.eventId})`);
+    try {
+      await this.paymentHandler.handle(event);
+      const processed = await this.eventsService.markProcessed(event);
 
-    return { id: event.id, status: event.status };
+      return { id: processed.id, status: processed.status };
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      const failed = await this.eventsService.markFailed(event, reason);
+      this.logger.error(`failed to process ${payload.eventId}: ${reason}`);
+
+      return { id: failed.id, status: failed.status };
+    }
   }
 
   private storedPayload(
