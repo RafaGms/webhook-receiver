@@ -1,4 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+} from '@nestjs/common';
+import type { RawBodyRequest } from '@nestjs/common';
+import type { Request } from 'express';
 import { PaymentWebhookDto } from '../common/dto/payment-webhook.dto';
 import { WebhooksService } from './webhooks.service';
 
@@ -8,7 +17,10 @@ export class WebhooksController {
 
   @Post('payments')
   @HttpCode(HttpStatus.OK)
-  receive(@Body() payload: PaymentWebhookDto) {
-    return this.webhooksService.handle(payload);
+  receive(
+    @Body() payload: PaymentWebhookDto,
+    @Req() request: RawBodyRequest<Request>,
+  ) {
+    return this.webhooksService.handle(payload, request.rawBody);
   }
 }
