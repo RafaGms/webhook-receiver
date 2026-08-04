@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validate } from './config/env.validation';
 import { EventsModule } from './events/events.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { EventsModule } from './events/events.module';
       }),
     }),
     EventsModule,
+    WebhooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
