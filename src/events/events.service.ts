@@ -25,6 +25,12 @@ export class EventsService {
     return this.repository.save(event);
   }
 
+  markDuplicate(event: Event): Promise<Event> {
+    event.status = EventStatus.Duplicate;
+
+    return this.repository.save(event);
+  }
+
   findById(id: string): Promise<Event | null> {
     return this.repository.findOneBy({ id });
   }

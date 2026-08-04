@@ -8,6 +8,7 @@ import {
 
 export enum EventStatus {
   Received = 'received',
+  Duplicate = 'duplicate',
   Processed = 'processed',
   Failed = 'failed',
 }
