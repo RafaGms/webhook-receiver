@@ -30,7 +30,7 @@ export class EnvironmentVariables {
   @IsInt()
   @Min(1)
   @Max(65535)
-  DB_PORT: number = 5432;
+  DB_PORT: number = 5433;
 
   @IsString()
   DB_USER: string = 'webhook';
