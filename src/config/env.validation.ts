@@ -52,6 +52,10 @@ export class EnvironmentVariables {
   @IsString()
   @MinLength(16)
   WEBHOOK_SECRET!: string;
+
+  @IsInt()
+  @Min(1)
+  IDEMPOTENCY_TTL: number = 86400;
 }
 
 export function validate(config: Record<string, unknown>): EnvironmentVariables {
